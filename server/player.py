@@ -7,14 +7,17 @@ class Player:
         self.name = name
         self.score = 0
     
+    def set_game(self, game):
+        self.game = game
+
     def update_score(self, x):
         self.score += x
     
-    def guess(self, string):
-        pass
+    def guess(self, wrd):
+        return self.game.player_guess(self, wrd)
 
     def disconnect(self):
-        pass
+        self.game.player_disconnected(self)
 
     def get_score(self):
         return self.score

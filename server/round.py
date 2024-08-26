@@ -4,7 +4,7 @@ from game import Game
 from chat import Chat
 
 class Round:
-    def __init__(self, word, player_drawing, players):
+    def __init__(self, word, player_drawing, players, game):
         self.word = word
         self.player_drawing = player_drawing
         self.player_guessed = []
@@ -35,5 +35,20 @@ class Round:
         if player == self.player_drawing:
             self.end_round("Drawing player left")
 
+    def skip(self):
+        self.skip() += 1
+        if self.skips > len(self.players) - 2:
+            return True
+        return False
+    
+    def get_scores(self):
+        return self.player_scores
+    
+    def get_score(self, player):
+        if player in self.player_scores:
+            return self.player_scores[player]
+        else:
+            raise Exception("Player not in score list")
+
     def end_round(self, msg):
-        pass
+        self.game.round_ended()
