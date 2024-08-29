@@ -1,5 +1,3 @@
-from round import Round
-
 class Chat(object):
     def __init__(self, r):
         self.content = []

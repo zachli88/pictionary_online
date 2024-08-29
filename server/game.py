@@ -1,30 +1,39 @@
-from player import Player
 from round import Round
 from board import Board
 import random
 
 class Game:
-    def __init__(self, id, players, thread):
+    def __init__(self, id, players):
         self.id = id
         self.players = players
         self.words_used = set()
         self.round = None
         self.board = Board()
+        self.round_count = 1
         self.player_draw_ind = 0
-        self.connected_thread = thread
         self.start_new_round()
 
     def start_new_round(self):
-        round_word = self.get_word()
-        self.round = Round(round_word, self.players[self.player_draw_ind], self.players, self)
-        self.player_draw_ind += 1
+        try:
+            round_word = self.get_word()
+            self.round = Round(round_word, self.players[self.player_draw_ind], self)
+            self.round_count += 1
 
-        if self.player_draw_ind >= len(self.players):
-            self.end_round()
+            if self.player_draw_ind >= len(self.players):
+                self.round_ended()
+                self.end_game()
+
+            self.player_draw_ind += 1
+
+        except Exception:
             self.end_game()
 
     def player_guess(self, player, guess):
         return self.round.guess(player, guess)
+    
+    def get_player_scores(self):
+        scores = {player.get_name():player.get_score() for player in self.players}
+        return scores
 
     def player_disconnected(self, player):
         if player in self.players:
@@ -45,6 +54,7 @@ class Game:
             new_round = self.round.skip()
             if new_round:
                 self.round_ended()
+            return new_round
         else:
             raise Exception("No round started")
 
@@ -72,5 +82,6 @@ class Game:
             return round_word
 
     def end_game(self):
+        print(f"[GAME] Game {self.id} ended")
         for player in self.players:
-            self.round.player_left(player)
+            player.game = None
