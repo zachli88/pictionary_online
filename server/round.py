@@ -24,7 +24,10 @@ class Round:
         correct = wrd == self.word
         if correct:
             self.player_guessed.append(player)
-        return correct
+            self.chat.update_chat(f"{player.get_name()} has guessed the word")
+            return True
+        self.chat.update_chat(f"{player.get_name()}: {wrd}")
+        return False
     
     def player_left(self, player):
         if player in self.player_scores:
@@ -34,6 +37,7 @@ class Round:
             self.player_guessed.remove(player)
 
         if player == self.player_drawing:
+            self.chat.update_chat("Drawing player disconnected - round skipped")
             self.end_round("Drawing player left")
 
     def skip(self):

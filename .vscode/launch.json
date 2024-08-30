@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Server",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/server/request_handler.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/server"
+    },
+    {
+      "name": "Run Client",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/test_connection.py",
+      "console": "integratedTerminal"
+    }
+  ]
+}
