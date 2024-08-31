@@ -15,6 +15,13 @@
       "request": "launch",
       "program": "${workspaceFolder}/test_connection.py",
       "console": "integratedTerminal"
+    },
+    {
+      "name": "Test game",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/client/game.py",
+      "console": "integratedTerminal"
     }
   ]
 }
