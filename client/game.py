@@ -72,9 +72,8 @@ class Game:
             clock.tick(60)
             try:
                 response = self.connection.send({3:[]})
-                if response:
-                    self.board.compressed_board = response
-                    self.board.translate_board()
+                self.board.compressed_board = response
+                self.board.translate_board()
 
                 response = self.connection.send({9:[]})
                 self.top_bar.time = response
@@ -82,6 +81,11 @@ class Game:
                 response = self.connection.send({2: []})
                 self.chat.update_chat(response)
 
+                player_list = self.connection.send({-1:[]})
+                self.players = []
+                self.leaderboard.players = []
+                for player in player_list.keys():
+                    self.add_player(Player(player, player_list[player]))
                 
                 self.top_bar.word = self.connection.send({6: []})
                 self.top_bar.round = self.connection.send({5: []})
@@ -89,10 +93,6 @@ class Game:
                 self.drawing = self.connection.send({11: []})
                 self.top_bar.drawing = self.drawing
 
-                # response = self.connection.send()
-                # for player in response:
-                #     p = Player(player)
-                #     self.add_player(p)
             except:
                 run = False
                 break

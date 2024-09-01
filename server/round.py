@@ -22,7 +22,7 @@ class Round:
         self.end_round("Time is up")
 
     def guess(self, player, wrd):
-        correct = wrd == self.word
+        correct = wrd == self.word.lower()
         if correct:
             self.player_guessed.append(player)
             self.chat.update_chat(f"{player.get_name()} has guessed the word")

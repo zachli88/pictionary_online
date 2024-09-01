@@ -12,7 +12,6 @@ class Server:
         self.game_id = 0
 
     def player_thread(self, conn, player):
-        last_board = None
         while True:
             try:
                 try:
@@ -34,6 +33,10 @@ class Server:
                     if player.game:
                         if key == 0: # guess
                             correct = player.guess(data['0'][0])
+                            if correct:
+                                player.update_score(player.game.round.time)
+                                if len(player.game.round.player_guessed) == len(player.game.players) - 1:
+                                    player.game.start_new_round()
                             send_msg[0] = correct
                         elif key == 1: # skip
                             skip = player.game.skip(player)
@@ -43,9 +46,7 @@ class Server:
                             send_msg[2] = content
                         elif key == 3: # get board
                             board = player.game.board.get_board()
-                            if last_board != board:
-                                last_board = board
-                                send_msg[3] = board
+                            send_msg[3] = board
                         elif key == 4: # get score
                             scores = [player.game.get_player_scores()]
                             send_msg[4] = scores

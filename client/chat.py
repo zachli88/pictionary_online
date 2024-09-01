@@ -10,7 +10,7 @@ class Chat:
         self.typing = ""
         self.BORDER_THICKNESS = 5
         self.CHAT_GAP = 22
-        self.chat_font = pygame.font.SysFont("comicsans", 20)
+        self.chat_font = pygame.font.SysFont("comicsans", 16)
         self.type_font = pygame.font.SysFont("comicsans", 16)
 
     def update_chat(self, content):
