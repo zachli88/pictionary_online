@@ -6,13 +6,13 @@ from game import Game
 import json
 
 class Server:
-    PLAYERS = 4
+    PLAYERS = 2
     def __init__(self):
         self.connection_queue = []
         self.game_id = 0
 
     def player_thread(self, conn, player):
-        
+        last_board = None
         while True:
             try:
                 try:
@@ -43,7 +43,9 @@ class Server:
                             send_msg[2] = content
                         elif key == 3: # get board
                             board = player.game.board.get_board()
-                            send_msg[3] = board
+                            if last_board != board:
+                                last_board = board
+                                send_msg[3] = board
                         elif key == 4: # get score
                             scores = [player.game.get_player_scores()]
                             send_msg[4] = scores
@@ -57,14 +59,17 @@ class Server:
                             skips = player.game.round.skips
                             send_msg[7] = skips
                         elif key == 8: # update board
-                            x, y, color = data['8'][:3]
-                            player.game.update_board(x, y, color)
+                            if player.game.round.player_drawing == player:
+                                x, y, color = data['8'][:3]
+                                player.game.update_board(x, y, color)
                         elif key == 9: # get round time
                             round_time = player.game.round.time
                             send_msg[9] = round_time
                         elif key == 10: # clear board
                             player.game.board.clear()
                             send_msg[10] = round_time
+                        elif key == 11:
+                            send_msg[11] = player.game.round.player_drawing == player
                     
                 conn.sendall((json.dumps(send_msg) + "." ).encode())
 

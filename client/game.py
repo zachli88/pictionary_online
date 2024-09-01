@@ -34,6 +34,7 @@ class Game:
         self.bottom_bar = BottomBar(310, 770, self)
         self.chat = Chat(1000, 125)
         self.players = []
+        self.drawing = False
         self.skip_button = TextButton(120, 675, 80, 40, (255, 255, 0), "Skip")
         self.draw_color = (0, 0, 0)
         self.BG = (255, 255, 255)
@@ -48,14 +49,15 @@ class Game:
         self.top_bar.draw(self.win)
         self.board.draw(self.win)
         self.skip_button.draw(self.win)
-        self.bottom_bar.draw(self.win)
+        if self.drawing:
+            self.bottom_bar.draw(self.win)
         self.chat.draw(self.win)
         pygame.display.update()
 
     def check_clicks(self):
         mouse = pygame.mouse.get_pos()
         if self.skip_button.click(*mouse):
-            skips = self.connection.send({1:[]})
+            self.connection.send({1:[]})
             print("Clicked skip button")
 
         click_board = self.board.click(*mouse)
@@ -70,8 +72,9 @@ class Game:
             clock.tick(60)
             try:
                 response = self.connection.send({3:[]})
-                self.board.compressed_board = response
-                self.board.translate_board()
+                if response:
+                    self.board.compressed_board = response
+                    self.board.translate_board()
 
                 response = self.connection.send({9:[]})
                 self.top_bar.time = response
@@ -79,10 +82,12 @@ class Game:
                 response = self.connection.send({2: []})
                 self.chat.update_chat(response)
 
-                if not self.top_bar.word:
-                    self.top_bar.word = self.connection.send({6: []})
-                    self.top_bar.round = self.connection.send({5: []})
-                    self.top_bar.max_round(len(self.players))
+                
+                self.top_bar.word = self.connection.send({6: []})
+                self.top_bar.round = self.connection.send({5: []})
+                self.top_bar.max_round = len(self.players)
+                self.drawing = self.connection.send({11: []})
+                self.top_bar.drawing = self.drawing
 
                 # response = self.connection.send()
                 # for player in response:
@@ -101,7 +106,7 @@ class Game:
                     self.check_clicks()
                     self.bottom_bar.button_events()
 
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN and not self.drawing:
                     if event.key == pygame.K_RETURN:
                         self.connection.send({0:[self.chat.typing]})
                         self.chat.typing = ""

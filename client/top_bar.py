@@ -8,7 +8,8 @@ class TopBar:
         self.height = height
         self.word = ""
         self.round = 1
-        self.max_round = 8
+        self.max_round = 0
+        self.drawing = False
         self.round_font = pygame.font.SysFont("comicsans", 35, bold = True)
         self.BORDER_THICKNESS = 5
         self.time = 75
@@ -18,8 +19,12 @@ class TopBar:
         text = self.round_font.render(f"Round {self.round} of {self.max_round}", 1, (0, 0, 0))
         win.blit(text, (self.x + 10, self.y + self.height / 2 - text.get_height() / 2))
 
-        underscores = self.round_font.render(TopBar.underscore_text(self.word), 1, (0, 0, 0))
-        win.blit(underscores, (self.x + self.width / 2 - underscores.get_width() / 2, self.y + self.height / 2 - underscores.get_height() / 2 + 10))
+        if self.drawing:
+            word = self.word
+        else:
+            word = TopBar.underscore_text(self.word)
+        txt = self.round_font.render(word, 1, (0, 0, 0))
+        win.blit(txt, (self.x + self.width / 2 - txt.get_width() / 2, self.y + self.height / 2 - txt.get_height() / 2 + 10))
 
         pygame.draw.circle(win, (0, 0, 0), (self.x + self.width - 75, self.y + self.height / 2), 40, self.BORDER_THICKNESS)
         timer = self.round_font.render(str(self.time), 1, (0, 0, 0))
