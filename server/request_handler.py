@@ -6,7 +6,7 @@ from game import Game
 import json
 
 class Server:
-    PLAYERS = 1
+    PLAYERS = 4
     def __init__(self):
         self.connection_queue = []
         self.game_id = 0
@@ -18,7 +18,6 @@ class Server:
                 try:
                     data = conn.recv(1024)
                     data = json.loads(data.decode())
-                    print("[LOG] Received data:", data)
                 except Exception as e:
                     break
 
@@ -37,7 +36,7 @@ class Server:
                             correct = player.guess(data['0'][0])
                             send_msg[0] = correct
                         elif key == 1: # skip
-                            skip = player.game.skip()
+                            skip = player.game.skip(player)
                             send_msg[1] = skip
                         elif key == 2: # get chat
                             content = player.game.round.chat.get_chat()
@@ -58,19 +57,26 @@ class Server:
                             skips = player.game.round.skips
                             send_msg[7] = skips
                         elif key == 8: # update board
-                            x,y,color = data[:3]
-                            self.game.update_board(x, y, color)
+                            x, y, color = data['8'][:3]
+                            player.game.update_board(x, y, color)
                         elif key == 9: # get round time
                             round_time = player.game.round.time
-                            print(round_time)
                             send_msg[9] = round_time
+                        elif key == 10: # clear board
+                            player.game.board.clear()
+                            send_msg[10] = round_time
                     
                 conn.sendall((json.dumps(send_msg) + "." ).encode())
 
             except Exception as e:
                 print(f"[EXCEPTION] {player.get_name()}:", e)
                 break
-        
+        if player.game:
+            player.game.player_disconnected(player)
+
+        if player in self.connection_queue:
+            self.connection_queue.remove(player)
+
         print(F"[DISCONNECT] {player.name} DISCONNECTED")
         conn.close()
 
@@ -79,7 +85,7 @@ class Server:
         if len(self.connection_queue) >= self.PLAYERS:
             game = Game(self.game_id, self.connection_queue[:])
 
-            for player in self.connection_queue:
+            for player in game.players:
                 player.set_game(game)
             
             self.game_id += 1
@@ -103,7 +109,7 @@ class Server:
             conn.close()
 
     def connection_thread(self):
-        server = "localhost"
+        server = ""
         port = 5555
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

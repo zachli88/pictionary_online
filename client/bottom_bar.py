@@ -17,20 +17,20 @@ class BottomBar:
         self.x = x
         self.y = y
         self.WIDTH = 640
-        self.HEIGHT = 100
+        self.HEIGHT = 120
         self.BORDER_THICKNESS = 5
         self.game = game
         self.clear_button = TextButton(self.x + self.WIDTH - 150, self.y + 25, 100, 50, (128, 128, 128), "Clear")
         self.eraser_button = TextButton(self.x + self.WIDTH - 300, self.y + 25, 100, 50, (128, 128, 128), "Eraser")
-        self.color_buttons = [Button(self.x + 20, self.y + 5, 30, 30, self.COLORS[0], border_width=0), 
-                              Button(self.x + 50, self.y + 5, 30, 30, self.COLORS[1], border_width=0),
-                              Button(self.x + 80, self.y + 5, 30, 30, self.COLORS[2], border_width=0),
-                              Button(self.x + 20, self.y + 35, 30, 30, self.COLORS[3], border_width=0),
-                              Button(self.x + 50, self.y + 35, 30, 30, self.COLORS[4], border_width=0),
-                              Button(self.x + 80, self.y + 35, 30, 30, self.COLORS[5], border_width=0),
-                              Button(self.x + 20, self.y + 65, 30, 30, self.COLORS[6], border_width=0),
-                              Button(self.x + 50, self.y + 65, 30, 30, self.COLORS[7], border_width=0),
-                              Button(self.x + 80, self.y + 65, 30, 30, self.COLORS[8], border_width=0)]
+        self.color_buttons = [Button(self.x + 20, self.y + 15, 30, 30, self.COLORS[0], border_width=0), 
+                              Button(self.x + 50, self.y + 15, 30, 30, self.COLORS[1], border_width=0),
+                              Button(self.x + 80, self.y + 15, 30, 30, self.COLORS[2], border_width=0),
+                              Button(self.x + 20, self.y + 45, 30, 30, self.COLORS[3], border_width=0),
+                              Button(self.x + 50, self.y + 45, 30, 30, self.COLORS[4], border_width=0),
+                              Button(self.x + 80, self.y + 45, 30, 30, self.COLORS[5], border_width=0),
+                              Button(self.x + 20, self.y + 75, 30, 30, self.COLORS[6], border_width=0),
+                              Button(self.x + 50, self.y + 75, 30, 30, self.COLORS[7], border_width=0),
+                              Button(self.x + 80, self.y + 75, 30, 30, self.COLORS[8], border_width=0)]
 
     def draw(self, win):
         pygame.draw.rect(win, (0, 0, 0), (self.x, self.y, self.WIDTH, self.HEIGHT), self.BORDER_THICKNESS)
@@ -44,6 +44,7 @@ class BottomBar:
         if self.clear_button.click(*mouse):
             print("Pressed clear button")
             self.game.board.clear()
+            self.game.connection.send({10:[]})
 
         if self.eraser_button.click(*mouse):
             print("Pressed eraser button")

@@ -20,7 +20,7 @@
       "name": "Test game",
       "type": "python",
       "request": "launch",
-      "program": "${workspaceFolder}/client/game.py",
+      "program": "${workspaceFolder}/client/main_menu.py",
       "console": "integratedTerminal"
     }
   ]

@@ -37,23 +37,18 @@ class Game:
 
     def player_disconnected(self, player):
         if player in self.players:
-            player_ind = self.players.index(player)
-            if player_ind >= self.player_draw_ind:
-            # if player_ind <= self.player_draw_ind:
-                self.player_draw_ind -= 1
-            self.players.remove(player)
+            #self.players.remove(player)
             self.round.player_left(player)
-            self.round.chat.update_chat(f"Player {player.get_name()} has disconnected")
+            #self.round.chat.update_chat(f"Player {player.get_name()} has disconnected")
         else:
             raise Exception("Player not in game")
         
         if len(self.players) <= 2:
             self.end_game()
 
-    def skip(self):
+    def skip(self, player):
         if self.round:
-            new_round = self.round.skip()
-            self.round.chat.update_chat(f"Player has voted to skip ({self.round.skips}/{len(self.players) - 2})")
+            new_round = self.round.skip(player)
             if new_round:
                 self.round.chat.update_chat("Round has been skipped")
                 self.round_ended()

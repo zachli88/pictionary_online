@@ -6,15 +6,15 @@ class Chat:
         self.y = y
         self.WIDTH = 250
         self.HEIGHT = 720
-        self.content = ["hello" for _ in range(100)]
+        self.content = []
         self.typing = ""
         self.BORDER_THICKNESS = 5
         self.CHAT_GAP = 22
         self.chat_font = pygame.font.SysFont("comicsans", 20)
         self.type_font = pygame.font.SysFont("comicsans", 16)
 
-    def update_chat(self, msg):
-        self.content.append(msg)
+    def update_chat(self, content):
+        self.content = content
 
     def draw(self, win):
         pygame.draw.rect(win, (200, 200, 200), (self.x, self.y + self.HEIGHT - 40, self.WIDTH, 40))
@@ -25,7 +25,7 @@ class Chat:
             self.content = self.content[1:]
 
         for i, msg in enumerate(self.content):
-            text = self.chat_font.render(" - " + msg, 1, (0, 0, 0))
+            text = self.chat_font.render(msg, 1, (0, 0, 0))
             win.blit(text, (self.x + 12, self.y + 8 + i * self.CHAT_GAP))
 
         type_chat = self.type_font.render(self.typing, 1, (0, 0, 0))
